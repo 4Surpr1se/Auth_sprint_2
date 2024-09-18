@@ -47,4 +47,5 @@ class Settings(BaseSettings):
     jaeger_port: int = Field(default=6831, alias="JAEGER_PORT")
     jaeger_service_name: str = Field(default="auth-service", alias="JAEGER_SERVICE_NAME")
 
+
 settings = Settings()

@@ -1,9 +1,12 @@
 # Проектная работа спринта
-Команда:  [Максим](https://github.com/4Surpr1se) [Данил](https://github.com/Jokcik) [Александра](https://github.com/schaleksandra)
+Команда: [Максим](https://github.com/4Surpr1se) [Александра](https://github.com/schaleksandra)
 
 [Приглашение](https://github.com/Jokcik/Auth_sprint_2)
 
 This is a FastAPI-based authentication service
+
+There is still some issues, add_rate_limiting might cause the problem sometimes. 
+As a movies admin, it doesn't support authorization yet, but auth works just fine 
 
 ## Setup
 
@@ -15,19 +18,27 @@ This is a FastAPI-based authentication service
 
 2. Run dependencies:
    ```
-   docker-compose up redis db
+   docker-compose up db redis db_django
    ```
    
 3. Run migrations:
    ```
    docker compose up migrate
    ```
-
-4. Run the application:
+   or
+   ```
+   alembic upgrade head
+   ```
+4. Run the auth application:
    ```
    poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
    ```
-
+5. Run the admin application:
+   ```
+   cd movies_admin
+   python manage.py migrate
+   python manage.py runserver localhost:8002
+   ```
 ## Миграции базы данных
 
 Для настройки схемы базы данных выполните следующие команды:

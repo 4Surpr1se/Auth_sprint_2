@@ -5,6 +5,7 @@ from db.redis import redis_client  # Импортируем асинхронны
 # Лимиты запросов
 REQUEST_LIMIT_PER_MINUTE = 20
 
+
 async def rate_limiter(request: Request):
     user_id = request.client.host  # Используем IP адрес пользователя
     now = datetime.datetime.now()

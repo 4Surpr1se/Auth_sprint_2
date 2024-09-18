@@ -19,6 +19,7 @@ app = FastAPI(
 )
 
 # Middleware для добавления ограничения количества запросов
+
 @app.middleware("http")
 async def add_rate_limiting(request: Request, call_next):
     await rate_limiter(request)  # Применяем ограничение запросов
@@ -29,7 +30,7 @@ async def add_rate_limiting(request: Request, call_next):
 # Инициализация трассировки
 init_tracer(app)
 
-# Middleware для трассировки и добавления x-request-id
+# Middleware для трассировки и добавления  x-request-id
 @app.middleware("http")
 async def add_request_id_header(request: Request, call_next):
     # Получаем x-request-id из заголовков или создаем новый
