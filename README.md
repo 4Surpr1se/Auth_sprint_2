@@ -1,7 +1,7 @@
 # Проектная работа спринта
 Команда: [Максим](https://github.com/4Surpr1se) [Александра](https://github.com/schaleksandra)
 
-[Приглашение](https://github.com/Jokcik/Auth_sprint_2)
+[Приглашение](https://github.com/4Surpr1se/Auth_sprint_2)
 
 This is a FastAPI-based authentication service
 
