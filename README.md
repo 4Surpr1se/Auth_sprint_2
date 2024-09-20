@@ -6,7 +6,7 @@
 This is a FastAPI-based authentication service
 
 There is still some issues, add_rate_limiting might cause the problem sometimes. 
-As a movies admin, it doesn't support authorization yet, but auth works just fine 
+As a movies admin, it doesn't support authorization yet, but authentication works just fine 
 
 ## Setup
 
