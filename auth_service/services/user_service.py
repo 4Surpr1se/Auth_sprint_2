@@ -17,6 +17,8 @@ from psycopg2 import errors
 from services.role_service import RoleService
 from schemas.user import UserUpdate, UserCreate
 
+from models.user import Oauth
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -61,14 +63,19 @@ class UserService:
         self.login_history_service = login_history_service
 
     def get_or_create_user_oauth(self, provider: str, user_info: dict) -> User:
-        user = self.db.query(User).filter(User.oauth_provider == provider, User.oauth_id == user_info['sub']).first()
+        oauth_row = self.db.query(Oauth).filter(Oauth.provider == provider,
+                                                Oauth.provider_user_id == user_info['id']).first()
+        if oauth_row:
+            return oauth_row.user[0]
+
+        user = self.db.query(User).filter(User.email == user_info.get("email")).first()
         if not user:
             user = User(
                 username=user_info.get("name", user_info.get("email")),
-                email=user_info.get("email"),
-                oauth_provider=provider,
-                oauth_id=user_info["sub"]
-            )
+                email=user_info.get("email"))
+        if not oauth_row:
+            oauth = Oauth(provider=provider, provider_user_id=user_info["id"])
+            user.oauth.append(oauth)
             self.db.add(user)
             self.db.commit()
             self.db.refresh(user)

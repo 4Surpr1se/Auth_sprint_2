@@ -7,7 +7,6 @@ from commands import cli_app
 from core.config import settings
 from core.lifespan import lifespan
 from decorators.permissions import get_current_user_global
-from core.rate_limiter import rate_limiter
 from core.tracing import init_tracer
 
 app = FastAPI(
@@ -17,14 +16,13 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan
 )
-
 # Middleware для добавления ограничения количества запросов
 
-@app.middleware("http")
-async def add_rate_limiting(request: Request, call_next):
-    await rate_limiter(request)  # Применяем ограничение запросов
-    response = await call_next(request)
-    return response
+# @app.middleware("http")
+# async def add_rate_limiting(request: Request, call_next):
+#     await rate_limiter(request)  # Применяем ограничение запросов
+#     response = await call_next(request)
+#     return response
 
 
 # Инициализация трассировки

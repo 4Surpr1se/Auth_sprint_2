@@ -10,27 +10,28 @@ from core.config import settings
 
 
 def init_tracer(app):
-    trace.set_tracer_provider(
-        TracerProvider(
-            resource=Resource.create({"service.name": settings.jaeger_service_name})
+    if settings.enable_tracer:
+        trace.set_tracer_provider(
+            TracerProvider(
+                resource=Resource.create({"service.name": settings.jaeger_service_name})
+            )
         )
-    )
 
-    jaeger_exporter = JaegerExporter(
-        agent_host_name=settings.jaeger_host,
-        agent_port=settings.jaeger_port,
-    )
+        jaeger_exporter = JaegerExporter(
+            agent_host_name=settings.jaeger_host,
+            agent_port=settings.jaeger_port,
+        )
 
-    trace.get_tracer_provider().add_span_processor(
-        BatchSpanProcessor(jaeger_exporter)
-    )
+        trace.get_tracer_provider().add_span_processor(
+            BatchSpanProcessor(jaeger_exporter)
+        )
 
-    trace.get_tracer_provider().add_span_processor(
-        SimpleSpanProcessor(ConsoleSpanExporter())
-    )
+        trace.get_tracer_provider().add_span_processor(
+            SimpleSpanProcessor(ConsoleSpanExporter())
+        )
 
-    FastAPIInstrumentor.instrument_app(app)
+        FastAPIInstrumentor.instrument_app(app)
 
-    app.add_middleware(OpenTelemetryMiddleware)
+        app.add_middleware(OpenTelemetryMiddleware)
 
     return app

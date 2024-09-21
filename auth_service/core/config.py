@@ -7,7 +7,7 @@ config.dictConfig(LOGGING)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
+    model_config = SettingsConfigDict(env_file='.env.example', env_file_encoding='utf-8', extra='ignore')
 
     project_name: str = "Auth Service"
 
@@ -33,6 +33,13 @@ class Settings(BaseSettings):
     first_superuser_email: str = Field(..., alias="FIRST_SUPERUSER_EMAIL")
     first_superuser_password: str = Field(..., alias="FIRST_SUPERUSER_PASSWORD")
 
+    # Oauth providers
+    providers_mapper: dict = {"yandex": {"login": "https://oauth.yandex.ru/authorize?response_type=token&client_id=",
+                                         "callback": "https://login.yandex.ru/info?format=json",
+                                         "client_id": Field(..., env="YANDEX_CLIENT_ID"),
+                                         "client_secret": Field(..., env="YANDEX_CLIENT_SECRET")},
+                              "vk": "", "google": ""}
+
     yandex_client_id: str = Field(..., env="YANDEX_CLIENT_ID")
     yandex_client_secret: str = Field(..., env="YANDEX_CLIENT_SECRET")
 
@@ -46,6 +53,7 @@ class Settings(BaseSettings):
     jaeger_host: str = Field(default="localhost", alias="JAEGER_HOST")
     jaeger_port: int = Field(default=6831, alias="JAEGER_PORT")
     jaeger_service_name: str = Field(default="auth-service", alias="JAEGER_SERVICE_NAME")
+    enable_tracer: bool = Field(default=True, alias="ENABLE_TRACER")
 
 
 settings = Settings()

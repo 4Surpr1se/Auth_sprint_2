@@ -11,10 +11,14 @@ user_roles = Table('user_roles', Base.metadata,
                    Column('role_id', UUID(as_uuid=True), ForeignKey('roles.id', ondelete="CASCADE"))
                    )
 
+user_oauth = Table('user_oauth', Base.metadata,
+                   Column('user_id', UUID(as_uuid=True), ForeignKey('users.id', ondelete="CASCADE")),
+                   Column('oauth_id', UUID(as_uuid=True), ForeignKey('oauth.id', ondelete="CASCADE"))
+                   )
+
 
 class User(Base):
     __tablename__ = "users"
-
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
@@ -22,8 +26,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     roles = relationship("Role", secondary=user_roles, back_populates="users")
     login_history = relationship("LoginHistory", back_populates="user", cascade="all, delete-orphan")
-    oauth_provider = Column(String, nullable=True)
-    oauth_id = Column(String, nullable=True)
+    oauth = relationship("Oauth", secondary=user_oauth, back_populates="user")
 
 
 class LoginHistory(Base):
@@ -38,3 +41,13 @@ class LoginHistory(Base):
     ip_address = Column(String)
     user_agent = Column(String)
     login_at = Column(DateTime, primary_key=True, default=func.now())
+
+
+class Oauth(Base):
+    # todo один ко многим - не успел
+    __tablename__ = "oauth"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, index=True)
+    user = relationship('User', secondary="user_oauth", back_populates='oauth')
+    provider = Column(String, nullable=True)
+    provider_user_id = Column(String, nullable=True, unique=True)
